@@ -11,6 +11,7 @@ dotenv.config();
 
 const port = process.env.PORT;
 if (!port) {
+  console.log('Please provide PORT in .env file at root directory');
   process.exit(1);
 }
 
@@ -22,7 +23,6 @@ const server = http.createServer(<httpHandler>((req, res) => {
     errorRequest();
     return;
   }
-
   const pathUrl = new URL(req.url, `http://${req.headers.host}`);
   const [, ...route]: string[] = pathUrl.pathname.split('/');
   let methods: Methods;
@@ -35,7 +35,6 @@ const server = http.createServer(<httpHandler>((req, res) => {
     return;
   }
   const action: httpHandler = methods.get(req.method!) || unknownHttpMethod;
-
   action(req, res);
 }));
 

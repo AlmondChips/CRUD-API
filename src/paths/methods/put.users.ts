@@ -1,12 +1,6 @@
-import http from 'http';
-import { v4 as uuid4 } from 'uuid';
-
+import { readBody } from '../../utils/readBody';
 import { getUserId } from '../../utils/getUserId';
-import {
-  GenericHttpHandler,
-  httpHandler,
-  GenericReadBody,
-} from '../../types/httpHandler';
+import { GenericHttpHandler, httpHandler } from '../../types/httpHandler';
 import { dbUsers } from '../../utils/dbUsers';
 import { sendError, sendJSONData } from '../../utils/customResponse';
 import { User } from '../../types/user.type';
@@ -50,22 +44,4 @@ const getUser: GenericHttpHandler<undefined | User> = (req, res) => {
     sendError(res, 'Id was not provided', 404);
   }
   return user;
-};
-
-const readBody: GenericReadBody = async <T>(
-  req: http.IncomingMessage,
-  res: http.ServerResponse,
-  callback: (body: string) => T,
-): Promise<T> => {
-  return new Promise((resolve) => {
-    let body = '';
-    req.on('data', (data) => {
-      body += data;
-      if (body.length > 1e6) req.connection.destroy();
-    });
-
-    req.on('end', () => {
-      resolve(callback(body));
-    });
-  });
 };
