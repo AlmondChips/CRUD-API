@@ -26,4 +26,9 @@ export class dbUsers {
       return this.users[idxOfUserInArray];
     }
   }
+
+  static deleteUser(user: User): User {
+    this.users = this.users.filter((userInDb) => !(userInDb.id === user.id));
+    return user;
+  }
 }

@@ -4,6 +4,7 @@ import { GenericHttpHandler, httpHandler } from '../../types/httpHandler';
 import { dbUsers } from '../../utils/dbUsers';
 import { sendError, sendJSONData } from '../../utils/customResponse';
 import { User } from '../../types/user.type';
+import { getUser } from '../../utils/getUser';
 
 export const putUsers: httpHandler = async (req, res) => {
   const user = getUser(req, res);
@@ -23,25 +24,4 @@ export const putUsers: httpHandler = async (req, res) => {
   });
 
   sendJSONData(res, updatedUser);
-};
-
-const getUser: GenericHttpHandler<undefined | User> = (req, res) => {
-  let id;
-  let user: User | undefined;
-  try {
-    id = getUserId(req, res);
-  } catch {
-    return;
-  }
-
-  if (id) {
-    user = dbUsers.getUsers(id) as User;
-    if (!user) {
-      sendError(res, 'User does not exist', 404);
-      return;
-    }
-  } else {
-    sendError(res, 'Id was not provided', 404);
-  }
-  return user;
 };
